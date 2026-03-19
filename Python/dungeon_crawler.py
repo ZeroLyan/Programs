@@ -2,6 +2,7 @@
 
 # Libraries
 import numpy as np
+import os, time
 
 # Variables 
 
@@ -21,13 +22,50 @@ class Enemy:
         self.HP = 10
         self.ATK = 2
         self.DEF = 1
-        self.SPD = np.random.randint(1, 5)
+        self.SPD = 7 # np.random.randint(1, 5)
 
 # Helper Functions
 def fight(player, enemy):
-    initiative_order = [[player.name, player.SPD], [enemy.name, enemy.SPD]]
+    os.system('clear')
+    
+    initiative_order = [[player.SPD, player.name], [enemy.SPD, enemy.name]]
     initiative_order.sort(reverse=True)
     print(initiative_order)
+        
+    print(f"{player.name} encountered a {enemy.name}. Fight!\n")
+    print(f"{initiative_order[0][1]} is first\n")
+    
+    while True:
+
+        if enemy.SPD <= player.SPD:
+            print(f"{player.name} HP: {player.HP}     {enemy.name} HP: {enemy.HP}\n")
+            print("*" * 28)
+            print("*  1. Fight     2. Defend  *")
+            print("*  3. Items     4. Run     *")
+            print("*" * 28, "\n\n")
+            player_choice = int(input("What would you like to do: "))
+            if 1 <= player_choice <= 4:
+                break
+        else:
+            
+            print(f"{enemy.name} chooses to attack {player.name}\n")
+            player.HP -= enemy.ATK
+            print(f"{enemy.name} dealt {enemy.ATK} damage to {player.name}\n")
+           
+            print(f"{player.name} HP: {player.HP}     {enemy.name} HP: {enemy.HP}\n")
+            
+            print("*" * 28)
+            print("*  1. Fight     2. Defend  *")
+            print("*  3. Items     4. Run     *")
+            print("*" * 28, "\n\n")
+     
+            player_choice = int(input("What would you like to do: "))
+            if player_choice == 1:
+                print(f"\n{player.name} attacks {enemy.name} for {player.ATK} damage\n")
+                enemy.HP -= player.ATK
+                time.sleep(1)
+            elif player_choice == 4:
+                break
 
 # Main Function
 def main():
