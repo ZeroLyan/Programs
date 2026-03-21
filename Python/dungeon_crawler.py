@@ -8,15 +8,38 @@ import os, time
 
 
 # Classes
+
+# Class for the Player
 class Player:
+    
+    # Function to initiate the player
     def __init__(self, name):
         self.name = name
         self.HP = 10
         self.ATK = 2
         self.DEF = 1
         self.SPD = np.random.randint(1,5)
+        self.items = []
 
+    # Funtion to print the players stats
+    def print_stats(self):
+        for name, value in vars(self).items():
+            if isinstance(value, int):
+                print(f"{name.upper()}: {value}")
+    
+    #Function to print players inventory
+    def print_inventory(self):
+        for items in self.items:
+            print(f"{items[0]}x {items[1]}")
+    
+    # Function to add items to the players inventory    
+    def add_item(self, quant, name):
+         self.items.append([quant, name])
+
+# Class for the Enemies
 class Enemy:
+
+    # Function to initiate the enemies
     def __init__(self, name):
         self.name = name
         self.HP = 10
@@ -25,6 +48,47 @@ class Enemy:
         self.SPD = 7 # np.random.randint(1, 5)
 
 # Helper Functions
+def start_game():
+    equipment = ["Sword", "Shield", "Boots", "Armor"]
+    print(f"{'Dungeon Fighter':^70}")
+    print("\n")
+    print(f"{'1. Play':^70}")
+    print(f"{"2. Quit":^70}")
+    menu_choice = input(f"\n{"Pick an option: ":>43}")
+    if menu_choice == '1' or menu_choice.title() == 'Play':
+        #os.system("clear")
+        print('*' * 24 + f"[Create Your Character]" + '*' * 24)
+        print(" " * 3 + "_" * 57)
+        player_name = input(" " * 2 + "|Name: ")
+        print(" " * 2 + f"|Are you sure you want to be called {player_name}? y/n")
+        name_check = input(" " * 2 + "|Answer: ")
+        if name_check == 'n':
+            player_name = input(" " * 2 + "|Name: ")
+        print(" " * 2 + f"|Choose a starting equip: 1.{equipment[0]} 2.{equipment[1]} 3.{equipment[2]} 4.{equipment[3]}")
+        chosen_item = int(input(" " * 2 + f"|Equip: "))
+        player = Player(player_name)
+        player.add_item(1, equipment[chosen_item - 1])
+        print(" " * 2 + f"|Welcome {player.name}! Hope you brought your lucky {player.items[0][1]}!") 
+        print(" " * 2 + "|Time to enter the dungeon.")
+        print(" " * 2 + "|Press any key to continue: ", end='')
+        player.print_stats()
+        player.print_inventory()
+        pause = input()
+        if chosen_item == 1:
+            player.ATK += 2
+        elif chosen_item == 2:
+            player.DEF += 1
+        elif chosen_item == 3:
+            player.SPD += 2
+        elif chosen_item == 4:
+            player.HP += 5
+        #os.system("clear")
+        
+    return menu_choice
+
+def game_loop(player):
+    fight(player, enemy=Enemy('Bandit'))
+
 def fight(player, enemy):
     os.system('clear')
     
@@ -36,10 +100,11 @@ def fight(player, enemy):
     print(f"{initiative_order[0][1]} is first\n")
     player_defending = False
     enemy_defendings = False
+    
+    
     time.sleep(1)
 
     while True:
-
          
         if enemy.SPD <= player.SPD:
             print(f"{player.name} HP: {player.HP}     {enemy.name} HP: {enemy.HP}\n")
@@ -50,9 +115,11 @@ def fight(player, enemy):
             player_choice = int(input("What would you like to do: "))
             if 1 <= player_choice <= 4:
                 break
+        
         else:
             
             print(f"{enemy.name} chooses to attack {player.name}\n")
+            
             if player_defending == True:
 
                 player.HP -= enemy.ATK - player.DEF
@@ -85,10 +152,15 @@ def fight(player, enemy):
 # Main Function
 def main():
     
-    player = Player("Jack")
+    '''player = Player("Jack")
     enemy = Enemy("Bandit")
 
-    fight(player, enemy)
+    fight(player, enemy)'''
+    while True:
+        
+        quit = start_game()
+        if quit == '2' or quit.title() == "Quit":
+            break
 
 # Start of Program
 if __name__ == '__main__':
