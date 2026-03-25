@@ -23,14 +23,19 @@ class Player:
 
     # Funtion to print the players stats
     def print_stats(self):
-        for name, value in vars(self).items():
-            if isinstance(value, int):
-                print(f"{name.upper()}: {value}")
+        print("\n\n" + "*" * 29 + f"[Stats]" + "*" * 29)
+        print(" " * 3 + '_' * 50 )
+        print(" " * 2 + f"|  Name: {self.name}")
+        for k, v in vars(self).items():
+            if isinstance(v, int):
+                print(" " * 2 + f"|  {k}: {v}")
     
     #Function to print players inventory
     def print_inventory(self):
+        print("\n\n" + "*" * 27 + f"[Inventory]" + "*" * 27)
+        print(" " * 3 + '_' * 20 + f"{self.name}'s Inventory" + '_' * 20)
         for items in self.items:
-            print(f"{items[0]}x {items[1]}")
+            print(" " * 2 + f"|  {items[0]}x {items[1]}")
     
     # Function to add items to the players inventory    
     def add_item(self, quant, name):
@@ -49,45 +54,66 @@ class Enemy:
 
 # Helper Functions
 def start_game():
+    
+    menu_choice = main_menu()
+
+    if menu_choice == '1' or menu_choice.title() == 'Play':
+        #os.system("clear")
+        player = create_char()
+        game_loop(player)      
+          
+    return menu_choice
+
+def game_loop(player):
+    fight(player, enemy=Enemy('Bandit'))
+
+def create_char():
+
     equipment = ["Sword", "Shield", "Boots", "Armor"]
+
+    print('*' * 24 + f"[Create Your Character]" + '*' * 24)
+    print(" " * 3 + "_" * 57)
+    
+    player_name = input(" " * 2 + "|  Name: ")
+    print(" " * 2 + f"|  Are you sure you want to be called {player_name}? y/n")
+    
+    name_check = input(" " * 2 + "|  Answer: ")
+    if name_check == 'n':
+        player_name = input(" " * 2 + "|  Name: ")
+    
+    print(" " * 2 + f"|  Choose a starting equip: 1.{equipment[0]} 2.{equipment[1]} 3.{equipment[2]} 4.{equipment[3]}")
+    
+    chosen_item = int(input(" " * 2 + f"|  Equip: "))
+    player = Player(player_name)
+    player.add_item(1, equipment[chosen_item - 1])
+    
+    print(" " * 2 + f"|  Welcome {player.name}! Hope you brought your lucky {player.items[0][1]}!") 
+    print(" " * 2 + "|  Time to enter the dungeon.")
+    print(" " * 2 + "|  Press any key to continue: ", end='')
+    
+    player.print_stats()
+    player.print_inventory()
+    pause = input()
+    
+    if chosen_item == 1:
+        player.ATK += 2
+    elif chosen_item == 2:
+        player.DEF += 1
+    elif chosen_item == 3:
+        player.SPD += 2
+    elif chosen_item == 4:
+        player.HP += 5
+    
+    return player
+
+def main_menu():
     print(f"{'Dungeon Fighter':^70}")
     print("\n")
     print(f"{'1. Play':^70}")
     print(f"{"2. Quit":^70}")
     menu_choice = input(f"\n{"Pick an option: ":>43}")
-    if menu_choice == '1' or menu_choice.title() == 'Play':
-        #os.system("clear")
-        print('*' * 24 + f"[Create Your Character]" + '*' * 24)
-        print(" " * 3 + "_" * 57)
-        player_name = input(" " * 2 + "|Name: ")
-        print(" " * 2 + f"|Are you sure you want to be called {player_name}? y/n")
-        name_check = input(" " * 2 + "|Answer: ")
-        if name_check == 'n':
-            player_name = input(" " * 2 + "|Name: ")
-        print(" " * 2 + f"|Choose a starting equip: 1.{equipment[0]} 2.{equipment[1]} 3.{equipment[2]} 4.{equipment[3]}")
-        chosen_item = int(input(" " * 2 + f"|Equip: "))
-        player = Player(player_name)
-        player.add_item(1, equipment[chosen_item - 1])
-        print(" " * 2 + f"|Welcome {player.name}! Hope you brought your lucky {player.items[0][1]}!") 
-        print(" " * 2 + "|Time to enter the dungeon.")
-        print(" " * 2 + "|Press any key to continue: ", end='')
-        player.print_stats()
-        player.print_inventory()
-        pause = input()
-        if chosen_item == 1:
-            player.ATK += 2
-        elif chosen_item == 2:
-            player.DEF += 1
-        elif chosen_item == 3:
-            player.SPD += 2
-        elif chosen_item == 4:
-            player.HP += 5
-        #os.system("clear")
-        
     return menu_choice
 
-def game_loop(player):
-    fight(player, enemy=Enemy('Bandit'))
 
 def fight(player, enemy):
     os.system('clear')
