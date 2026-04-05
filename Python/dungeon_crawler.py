@@ -16,9 +16,12 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.HP = 10
-        self.ATK = 2
+        self.ATK = 1
+        self.DMG = self.ATK
         self.DEF = 1
         self.SPD = np.random.randint(1,5)
+        self.EVN = int(3 + (self.SPD * .4))
+        self.ACC = int(3 + (self.ATK * .75))
         self.items = []
 
     # Funtion to print the players stats
@@ -48,9 +51,12 @@ class Enemy:
     def __init__(self, name):
         self.name = name
         self.HP = 10
-        self.ATK = 2
+        self.ATK = 1
+        self.DMG = self.ATK
         self.DEF = 1
-        self.SPD = 7 # np.random.randint(1, 5)
+        self.SPD = np.random.randint(1,5)
+        self.EVN = int(3 + (self.SPD * .4))
+        self.ACC = int(3 + (self.ATK * .75))
 
 # Helper Functions
 def start_game():
@@ -90,11 +96,7 @@ def create_char():
     print(" " * 2 + f"|  Welcome {player.name}! Hope you brought your lucky {player.items[0][1]}!") 
     print(" " * 2 + "|  Time to enter the dungeon.")
     print(" " * 2 + "|  Press any key to continue: ", end='')
-    
-    player.print_stats()
-    player.print_inventory()
-    pause = input()
-    
+       
     if chosen_item == 1:
         player.ATK += 2
     elif chosen_item == 2:
@@ -103,6 +105,11 @@ def create_char():
         player.SPD += 2
     elif chosen_item == 4:
         player.HP += 5
+
+    player.print_stats()
+    player.print_inventory()
+    pause = input()
+ 
     
     return player
 
@@ -115,6 +122,26 @@ def main_menu():
     return menu_choice
 
 
+def check_hit(attacker, defender):
+
+    hit_chance = attacker.ACC / (attacker.ACC + defender.EVN) # Calculate hit chance based on accuracy and enemy evasion
+    hit_chance = max(0.1, min(hit_chance, 0.9)) # Ensure hit chance is between 10% and 90%
+
+    roll = (np.random.rand() + np.random.rand()) / 2 # Roll a number between 0 and 1 with a bell curve distribution
+
+    if roll > hit_chance + 0.1: # 10% chance for a critical hit
+        return "Critical Hit!"
+
+    elif roll > hit_chance:
+        return "Hit!"
+    
+    elif roll < hit_chance - 0.1: # 10% chance for a critical miss
+        return "Critical Miss!"
+    
+    else:
+        return "Miss!"
+    
+
 def fight(player, enemy):
     os.system('clear')
     
@@ -125,7 +152,7 @@ def fight(player, enemy):
     print(f"{player.name} encountered a {enemy.name}. Fight!\n")
     print(f"{initiative_order[0][1]} is first\n")
     player_defending = False
-    enemy_defendings = False
+    enemy_defending = False
     
     
     time.sleep(1)
@@ -133,13 +160,54 @@ def fight(player, enemy):
     while True:
          
         if enemy.SPD <= player.SPD:
+            
             print(f"{player.name} HP: {player.HP}     {enemy.name} HP: {enemy.HP}\n")
+            
             print("*" * 28)
             print("*  1. Fight     2. Defend  *")
             print("*  3. Items     4. Run     *")
             print("*" * 28, "\n\n")
+     
             player_choice = int(input("What would you like to do: "))
-            if 1 <= player_choice <= 4:
+            
+            if player_choice == 1:
+            
+                print(f"\n{player.name} attacks {enemy.name}\n")
+                
+                attack_result = check_hit(player, enemy)
+                print(f"Attack Result: {attack_result}\n")
+                
+                if attack_result == "Critical Hit!":
+                    damage = (player.DMG * np.random.uniform(0.85, 1.15)) * 2 # Add some randomness to damage
+                    enemy.HP -= damage
+                    print(f"{player.name} dealt a critical hit for {damage} damage!\n")
+                    time.sleep(1)
+
+                elif attack_result == "Hit!":
+                    damage = (player.DMG * np.random.uniform(0.85, 1.15)) # Add some randomness to damage
+                    enemy.HP -= damage
+                    print(f"{player.name} dealt {damage} damage!\n")
+                    
+                    time.sleep(1)
+
+                elif attack_result == "Critical Miss!":
+                    print(f"{player.name} critically missed and hurt themselves!\n")
+                    damage = player.DMG * np.random.uniform(0.85, 1.15) # Add some randomness to damage
+                    player.HP -= damage
+                    print(f"{player.name} took {damage} damage from the critical miss!\n")
+                    
+                    time.sleep(1)
+
+                else:
+                    print(f"{player.name} missed the attack!\n")
+                    time.sleep(1)
+                
+            if player_choice == 2:
+            
+                player_defending = True
+                print(f"\n{player.name} is defending.\n")
+                
+            elif player_choice == 4:
                 break
         
         else:
@@ -164,11 +232,36 @@ def fight(player, enemy):
             print("*" * 28, "\n\n")
      
             player_choice = int(input("What would you like to do: "))
+            
             if player_choice == 1:
+            
                 print(f"\n{player.name} attacks {enemy.name} for {player.ATK} damage\n")
-                enemy.HP -= player.ATK
-                time.sleep(1)
+                
+                attack_result = check_hit(player, enemy)
+                print(f"Attack Result: {attack_result}\n")
+                
+                if attack_result == "Critical Hit!":
+                    enemy.HP -= player.DMG * (np.random.uniform(0.85, 1.15)) * 2 # Add some randomness to damage
+                    
+                    time.sleep(1)
+
+                elif attack_result == "Hit!":
+                    enemy.HP -= player.DMG * (np.random.uniform(0.85, 1.15)) # Add some randomness to damage
+                    
+                    time.sleep(1)
+
+                elif attack_result == "Critical Miss!":
+                    print(f"{player.name} critically missed and hurt themselves!\n")
+                    player.HP -= player.DMG * (np.random.uniform(0.85, 1.15)) # Add some randomness to damage
+                    
+                    time.sleep(1)
+
+                else:
+                    print(f"{player.name} missed the attack!\n")
+                    time.sleep(1)
+                
             if player_choice == 2:
+            
                 player_defending = True
                 print(f"\n{player.name} is defending.\n")
                 
