@@ -64,7 +64,7 @@ def build_login_block(intensity=0.5):
     pass_bar = glitch_bar(8, intensity)
 
     line1 = f" > Username: [{user_bar}]"
-    line2 = f"> Password: [{pass_bar}]"
+    line2 = f" > Password: [{pass_bar}]"
 
     return line1 + "\n" + line2
 
