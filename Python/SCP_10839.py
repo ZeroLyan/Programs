@@ -49,9 +49,42 @@ def typed_progress_bar_single_line(total=20, duration=5, message=" > Processing"
         time.sleep(duration / total)
     print()  # Move to the next line after progress bar finishes
 
+def glitch_bar(length=12, intensity=0.5):
+    
+    glitch_chars = "#$%&█@!?"
+    
+    return ''.join(
+        random.choice(glitch_chars) if random.random() < intensity else '█' 
+        for _ in range(length)
+                   )
 
+def build_login_block(intensity=0.5):
+    
+    user_bar = glitch_bar(8, intensity)
+    pass_bar = glitch_bar(8, intensity)
 
-def glitch_loading(message = " > Corrupted Data Detected..."):
+    line1 = f" > Username: [{user_bar}]"
+    line2 = f"> Password: [{pass_bar}]"
+
+    return line1 + "\n" + line2
+
+def glitch_block(duration=5):
+
+    start = time.time()
+
+    while time.time() - start < duration:
+        progress = (time.time() - start) / duration
+        intensity = 0.1 + progress * 0.5  # Increase intensity over time
+
+        sys.stdout.write("\033[2A")
+
+        block = build_login_block(intensity)
+
+        sys.stdout.write(block + "\n")
+        sys.stdout.flush()
+        time.sleep(0.08)
+
+def corrupted_loading(message = " > Corrupted Data Detected..."):
     type_print(message, delay=0.05)
     type_print(" > Attempting to recover...", delay=0.05)
     spinner(5, " > Recovering")
@@ -110,7 +143,7 @@ def fast_fetch():
         "Network": "Quantum Entanglement Interface (QEI) - 1Tbps"
     }
     for key, value in system_info.items():
-        type_print(f" > {key}: {value}")
+        type_print(f" > {key}: {value}", delay=0.01)
         time.sleep(0.5)
 
 # Boot Animation Functions
@@ -147,15 +180,33 @@ def start_up():
     pause(0.5, 1)
     type_print(" > All systems online.")
 
-
 def login_screen():
     clear_screen()
-    header_login = "SCP FOUNDATION TERMINAL - LOGIN"
-    type_print(header_login)
+    print_ascii_logo("fast")
+    type_print(" > SCP FOUNDATION TERMINAL - LOGIN", delay=0.05)
     pause()
+    
+    print("> Username: [████████]")
+    print("> Password: [████████]")
+
+    glitch_block(2)
+    
+    corrupted_loading(" > Access Denied. Corrupted credentials detected...")
+
+def remote_access_override():
+    type_print(" > Attempting to override remote access protocols...")
+    pause(0.5, 1)
+    spinner(5, " > Bypassing security measures")
+    pause(0.5, 1)
+    type_print(" > Override successful. Remote access granted.")
+    pause(0.5, 1)
+    type_print(" > Welcome to the O.R.A.C.L.E. Terminal O5-███.")
+    pause(0.5, 1)
 
 def main():
-    start_up()
+    #start_up()
+    login_screen()
+    remote_access_override()
 
 if __name__ == "__main__":
     main()
