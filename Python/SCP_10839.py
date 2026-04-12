@@ -204,7 +204,7 @@ def remote_access_override():
     pause(0.5, 1)
 
 def main():
-    #start_up()
+    start_up()
     login_screen()
     remote_access_override()
 
