@@ -1,5 +1,6 @@
 # SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existence.
 
+from email import message
 import time
 import random
 import os
@@ -27,11 +28,20 @@ def spinner(duration=3, message=" > Loading"):
     symbols = ['|', '/', '-', '\\']
     end_time = time.time() + duration
     i = 0
+
+    for char in message:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.05)
+    time.sleep(0.5)
+
     while time.time() < end_time:
-        overwrite_line(f"{message}... {symbols[i % len(symbols)]}")
+        sys.stdout.write(f"\r{message}... {symbols[i % len(symbols)]}")
+        sys.stdout.flush()
         time.sleep(0.1)
         i += 1
-    overwrite_line(" " * (len(message) + 10) + "\r")  # Clear the line after spinner finishes
+    sys.stdout.write("\r" + " " * (len(message) + 10) + "\r")
+    sys.stdout.flush()
 
 def typed_progress_bar_single_line(total=20, duration=5, message=" > Processing"):
     
@@ -95,7 +105,6 @@ def corrupted_loading(message = " > Corrupted Data Detected..."):
         time.sleep(0.4)
     print()  # Move to the next line after glitch effect
     
-
 def print_ascii_logo(mode):
     clear_screen()
     # Function to print out the ascii art header for the terminal using the SCP Foundation logo using type print
@@ -124,10 +133,11 @@ def print_ascii_logo(mode):
         print("-" * 88)
         pause(1, 1.5)
     else:
-        type_print(header, delay=0.000000001)
-        type_print("-" * 88, delay=0.000000001)
-        pause(0.1, 0.3)
-
+        for line in header.splitlines():
+            print(line)
+            time.sleep(0.15)
+        type_print("-" * 88)
+        pause(1, 1.5)
 
 def fast_fetch():
     # Simulate what fastfetch does in a linux terminal by displaying system information
@@ -147,6 +157,19 @@ def fast_fetch():
         time.sleep(0.5)
 
 # Boot Animation Functions
+def start_up():
+    print_ascii_logo("line")
+    type_print(" > Powering on...")
+    pause(0.5, 1)
+    spinner(4, " > Loading Boot Sequence")
+    pause(0.5, 1)
+    boot_sequence()
+    pause(0.5, 1)
+    typed_progress_bar_single_line(30, 3, " > Initializing Systems")
+    pause(0.5, 1)
+    type_print(" > All systems online.")
+
+
 def boot_sequence():
     # Simulate a boot sequence with various system checks
     type_print(" > Initializing operating system...")
@@ -167,18 +190,6 @@ def boot_sequence():
     pause(0.5, 1)
     type_print(" > Terminal ready.")
     pause(0.5, 1)
-
-def start_up():
-    print_ascii_logo("type")
-    type_print(" > Powering on...")
-    pause(0.5, 1)
-    spinner(4, " > Loading Boot Sequence")
-    pause(0.5, 1)
-    boot_sequence()
-    pause(0.5, 1)
-    typed_progress_bar_single_line(30, 3, " > Initializing Systems")
-    pause(0.5, 1)
-    type_print(" > All systems online.")
 
 def login_screen():
     clear_screen()
@@ -207,6 +218,8 @@ def main():
     start_up()
     login_screen()
     remote_access_override()
+    
+
 
 if __name__ == "__main__":
     main()
