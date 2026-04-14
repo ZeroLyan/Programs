@@ -1,6 +1,4 @@
-# SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existence.
-
-from email import message
+# SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existed
 import time
 import random
 import os
@@ -214,12 +212,57 @@ def remote_access_override():
     type_print(" > Welcome to the O.R.A.C.L.E. Terminal O5-███.")
     pause(0.5, 1)
 
-def main():
-    start_up()
-    login_screen()
-    remote_access_override()
-    
+def main_menu():
+        print_ascii_logo("fast")
+        type_print(" > 1) SCP Files", delay = 0.01)
+        pause(0.5, 1.0)
+        type_print(" > 2) MTF Teams", delay = 0.01)
+        pause(0.5, 1.0)
+        type_print(" > 3) Foundation Sites", delay = 0.01)
+        pause(0.5, 1.0)
+        type_print(" > 4) Departments", delay = 0.01)
+        pause(0.5, 1.0)
 
+def scp_files():
+    print("It worked!")
+
+def mtf_teams():
+    type_print(" > List", delay = 0.01)
+    pause(0.5, 1.0)
+    type_print(" > Search", delay = 0.01)
+    pause(0.5, 1.0)
+    type_print(" > Current Missions", delay = 0.01)
+    pause(0.5, 1.0)
+    type_print(" > Deploy", delay = 0.01)
+    pause(0.5, 1.0)
+
+def foundation_sites():
+    print("It worked!")
+
+def departments():
+    print("It worked!")
+
+def main_menu_chooser(choice):
+    if choice == 1:
+      scp_files()
+    elif choice == 2:
+        mtf_teams()
+    elif choice == 3:
+        foundation_sites()
+    elif choice == 4:
+        departments()
+    else:
+        type_print(" > Shutting down O.R.A.C.L.E Terminal. Goodbye, O5-███")
+        pause(1, 1.5)
+        
+
+def main():
+    #start_up()
+    #login_screen()
+    #remote_access_override()
+    main_menu()
+    user_choice = int(input(" > "))
+    main_menu_chooser(user_choice)
 
 if __name__ == "__main__":
     main()
