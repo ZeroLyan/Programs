@@ -1,12 +1,12 @@
 # SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existed
-import time
+import time, string
 import random
 import os
 import sys
 
 
 # Helper Functions
-def type_print(text, delay=0.03):
+def type_print(text, delay=0.015):
     for char in text:
         print(char, end='', flush=True)
         time.sleep(delay + random.uniform(0, 0.02))
@@ -134,7 +134,7 @@ def print_ascii_logo(mode):
         for line in header.splitlines():
             print(line)
             time.sleep(0.15)
-        type_print("-" * 88)
+        print("-" * 88)
         pause(1, 1.5)
 
 def fast_fetch():
@@ -157,9 +157,8 @@ def fast_fetch():
 # Boot Animation Functions
 def start_up():
     print_ascii_logo("line")
-    type_print(" > Powering on...")
-    pause(0.5, 1)
-    spinner(4, " > Loading Boot Sequence")
+    pause(0.5, 1.0)
+    spinner(5, " > Powering on")
     pause(0.5, 1)
     boot_sequence()
     pause(0.5, 1)
@@ -169,12 +168,27 @@ def start_up():
 
 
 def boot_sequence():
+    greek_names = [
+    "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta",
+    "iota", "kappa", "lambda", "mu", "nu", "xi", "omicron", "pi",
+    "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega"
+                ]
+    alpha = list(string.ascii_uppercase)
+
     # Simulate a boot sequence with various system checks
-    type_print(" > Initializing operating system...")
+    spinner(4, " > Initializing Boot Sequence")
+    pause(0.5, 1)
+    spinner(8, " > Scanning for stable reality baseline")
+    pause(0.5, 1)
+    type_print(" > Stable Reality Found")
+    pause(0.5, 1)
+    spinner(6, " > Locating kernel access point")
+    pause(0.5, 1)
+    type_print(f" > Access point located in reality {random.choice(greek_names).title()} {random.choice(alpha)}{random.randint(14,987)}")
+    pause(0.5, 1)
+    typed_progress_bar_single_line(15, 4, " > Synchronizing Kernal Probability Shift")
     pause(0.5, 1)
     typed_progress_bar_single_line(25, 4, " > Loading Omniscient Research And Containment Logistics Environment (O.R.A.C.L.E.)")
-    pause(0.5, 1)
-    spinner(3, " > Loading kernel")
     pause(0.5, 1)
     type_print(" > Checking hardware components...")
     fast_fetch()
@@ -214,33 +228,46 @@ def remote_access_override():
 
 def main_menu():
         print_ascii_logo("fast")
-        type_print(" > 1) SCP Files", delay = 0.01)
+        type_print(" > 1) SCP Files")
         pause(0.5, 1.0)
-        type_print(" > 2) MTF Teams", delay = 0.01)
+        type_print(" > 2) MTF Teams")
         pause(0.5, 1.0)
-        type_print(" > 3) Foundation Sites", delay = 0.01)
+        type_print(" > 3) Foundation Sites")
         pause(0.5, 1.0)
-        type_print(" > 4) Departments", delay = 0.01)
+        type_print(" > 4) Departments")
         pause(0.5, 1.0)
 
-def scp_files():
-    print("It worked!")
+def scp_files(): 
+    type_print(" > 1) List")
+    pause(0.5, 1.0)
+    type_print(" > 2) Search")
+    pause(0.5, 1.0)
+    input(" > Press enter to continue")
 
 def mtf_teams():
-    type_print(" > List", delay = 0.01)
+    type_print(" > 1) List")
     pause(0.5, 1.0)
-    type_print(" > Search", delay = 0.01)
+    type_print(" > 2) Search")
     pause(0.5, 1.0)
-    type_print(" > Current Missions", delay = 0.01)
+    type_print(" > 3) Current Missions")
     pause(0.5, 1.0)
-    type_print(" > Deploy", delay = 0.01)
+    type_print(" > 4) Deploy")
     pause(0.5, 1.0)
+    input(" > Press enter to continue")
 
 def foundation_sites():
-    print("It worked!")
+    type_print(" > 1) List")
+    pause(0.5, 1.0)
+    type_print(" > 2) Search")
+    pause(0.5, 1.0)
+    input(" > Press enter to continue")
 
 def departments():
-    print("It worked!")
+    type_print(" > 1) List")
+    pause(0.5, 1.0)
+    type_print(" > 2) Search")
+    pause(0.5, 1.0)
+    input("Press enter to continue")
 
 def main_menu_chooser(choice):
     if choice == 1:
@@ -257,9 +284,9 @@ def main_menu_chooser(choice):
         
 
 def main():
-    #start_up()
-    #login_screen()
-    #remote_access_override()
+    start_up()
+    login_screen()
+    remote_access_override()
     main_menu()
     user_choice = int(input(" > "))
     main_menu_chooser(user_choice)
