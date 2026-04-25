@@ -12,6 +12,38 @@ def type_print(text, delay=0.015):
 def pause(a=0.2, b=0.6):
     time.sleep(random.uniform(a, b))
 
+def clean_text(text):
+    return (
+        text.replace("\xa0", " ")   # fix non-breaking spaces
+            .replace("\r\n", "\n")  # normalize Windows newlines
+    )
+
+def format_text(text, width=90):
+    text = clean_text(text)
+    lines = text.splitlines()
+
+    formatted = []
+
+    for line in lines:
+        line = line.strip()
+
+        if not line:
+            formatted.append("")  # preserve blank lines
+            continue
+
+        # wrap long lines but keep original structure
+        wrapped = textwrap.wrap(line, width=width)
+
+        for w in wrapped:
+            formatted.append("    " + w)  # indent each line
+
+    return "\n".join(formatted)
+
+def stream_text(text, delay=0.5):
+    for line in text.splitlines():
+        print(line)
+        time.sleep(delay + random.uniform(0, 0.02))
+
 def overwrite_line(text):
     sys.stdout.write("\r" + text)
     sys.stdout.flush()
@@ -260,20 +292,22 @@ def format_scp(row, scp_id):
 
     obj_class = extract_object_class(text)
 
-    wrapped_text = format_text(text)
-
-    return f"""
+    type_print(f"""
  > ACCESSING FILE {row.get('code', scp_id)}
 
- TITLE: {row.get('title', 'UNKNOWN')}
- CLASS: {obj_class}
- RATING: {row.get('rating', 'N/A')}
- TAGS: {row.get('tags', 'NONE')}
+ > TITLE: {row.get('title', 'UNKNOWN')}
+ > CLASS: {obj_class}
+ > RATING: {row.get('rating', 'N/A')}
+ > TAGS: {row.get('tags', 'NONE')}
+ """, delay=0.02)
+    print("-" * 88)
 
- ----------------------------------
-
-{wrapped_text}
-"""
+    formatted = format_text(text)
+    stream_text(formatted)
+    print("\n"+ "-" * 88)
+    type_print(" --- END OF FILE ---")
+    type_print(" > Returning to main menu...")
+    pause(1, 1.5)
 
 def scp_open(scp_number, scp_lookup):
     row = scp_lookup.get(int(scp_number))
@@ -282,8 +316,8 @@ def scp_open(scp_number, scp_lookup):
         type_print("FILE NOT FOUND")
         return
 
-    output = format_scp(row, scp_number)
-    type_print(output, delay=0.01)
+    else:
+        format_scp(row, scp_number)
 
 def scp_files():
 
