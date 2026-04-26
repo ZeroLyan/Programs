@@ -304,9 +304,9 @@ def format_scp(row, scp_id):
 
     formatted = format_text(text)
     stream_text(formatted)
-    print("\n"+ "-" * 88)
-    type_print(" --- END OF FILE ---")
-    type_print(" > Returning to main menu...")
+    type_print("\n\n    --- END OF FILE ---")
+    print("\n\n"+ "-" * 88)
+    type_print("\n\n > Returning to main menu...")
     pause(1, 1.5)
 
 def scp_open(scp_number, scp_lookup):
@@ -391,17 +391,15 @@ def main_menu_chooser(choice):
     else:
         type_print(" > Shutting down O.R.A.C.L.E Terminal. Goodbye, O5-███")
         pause(1, 1.5)
-        
 
 def main():
     
-    #start_up()
-    #login_screen()
-    #remote_access_override()
-    #main_menu()
-    #user_choice = int(input(" > "))
-    #main_menu_chooser(user_choice)
-    scp_files()
+    start_up()
+    login_screen()
+    remote_access_override()
+    main_menu()
+    user_choice = int(input(" > "))
+    main_menu_chooser(user_choice)
 
 if __name__ == "__main__":
     main()
