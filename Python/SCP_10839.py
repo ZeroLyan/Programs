@@ -1,6 +1,9 @@
 # SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existed
 import time, string, random, os, sys, textwrap, re
 import pandas as pd
+from email import header
+import time, string, random, os, sys, textwrap, re
+import pandas as pd
 
 # Helper Functions
 def type_print(text, delay=0.015):
@@ -157,13 +160,13 @@ def print_ascii_logo(mode):
     """
     if mode == "fast":
         print(header)
-        print("-" * 88)
+        print("=" * 88)
         pause(1, 1.5)
     else:
         for line in header.splitlines():
             print(line)
             time.sleep(0.15)
-        print("-" * 88)
+        print("=" * 88)
         pause(1, 1.5)
 
 def fast_fetch():
@@ -183,7 +186,7 @@ def fast_fetch():
         type_print(f" > {key}: {value}", delay=0.01)
         time.sleep(0.5)
 
-# Boot Animation Functions
+# Print functions for the boot sequence, login screen, and main menu
 def start_up():
     print_ascii_logo("line")
     pause(0.5, 1.0)
@@ -194,6 +197,7 @@ def start_up():
     typed_progress_bar_single_line(30, 3, " > Initializing Systems")
     pause(0.5, 1)
     type_print(" > All systems online.")
+    pause(1.5, 2.0)
     pause(1.5, 2.0)
 
 def boot_sequence():
@@ -214,8 +218,11 @@ def boot_sequence():
     spinner(6, " > Locating kernel access point")
     pause(0.5, 1)
     type_print(f" > Access point located in reality {random.choice(alpha)}{random.randint(14,987)} {random.choice(greek_names).title()} sector")
+    type_print(f" > Access point located in reality {random.choice(alpha)}{random.randint(14,987)} {random.choice(greek_names).title()} sector")
     pause(0.5, 1)
     typed_progress_bar_single_line(15, 4, " > Synchronizing Kernal Probability Shift")
+    pause(0.5, 1)
+    type_print(" > Reality Anchor Established...")
     pause(0.5, 1)
     type_print(" > Reality Anchor Established...")
     pause(0.5, 1)
@@ -239,6 +246,7 @@ def login_screen():
     print_ascii_logo("fast")
     type_print(" > SCP FOUNDATION TERMINAL - LOGIN", delay=0.05)
     pause(1, 1.5)
+    pause(1, 1.5)
     
     print("> Username: [████████]")
     print("> Password: [████████]")
@@ -257,17 +265,33 @@ def remote_access_override():
     type_print(" > Welcome to the O.R.A.C.L.E. Terminal O5-███.")
     pause(0.5, 1)
 
-def main_menu():
-        print_ascii_logo("fast")
-        type_print(" > 1) SCP Files")
-        pause(0.5, 1.0)
-        type_print(" > 2) MTF Teams")
-        pause(0.5, 1.0)
-        type_print(" > 3) Foundation Sites")
-        pause(0.5, 1.0)
-        type_print(" > 4) Departments")
-        pause(0.5, 1.0)
+# Main Loop
+def main_loop():
+        while True:
+            print_ascii_logo("fast")
+            type_print(" > 1) SCP Files")
+            pause(0.5, 1.0)
+            type_print(" > 2) Foundation Sites")
+            pause(0.5, 1.0)
+            type_print(" > 3) Shut Down Terminal")
+            pause(0.5, 1.0)
+        
+            user_choice = int(input(" > "))
+            if main_menu_chooser(user_choice) == False:
+                break
 
+def main_menu_chooser(choice):
+
+    if choice == 1:
+        scp_files()
+    elif choice == 2:
+        foundation_sites()
+    elif choice == 3:
+        type_print(" > Shutting down O.R.A.C.L.E Terminal. Goodbye, O5-███")
+        pause(1, 1.5)
+        return False
+
+# SCP File Functions
 def format_text(text, width=90):
     paragraphs = text.split("\n")
 
@@ -287,7 +311,7 @@ def extract_object_class(text):
     match = re.search(r"Object Class:\s*([A-Za-z]+)", text)
     return match.group(1) if match else "Unknown"
 
-def format_scp(row, scp_id):
+def output_scp(row, scp_id):
     text = row.get("text", "")
 
     obj_class = extract_object_class(text)
@@ -306,8 +330,8 @@ def format_scp(row, scp_id):
     stream_text(formatted)
     type_print("\n\n    --- END OF FILE ---")
     print("\n\n"+ "-" * 88)
-    type_print("\n\n > Returning to main menu...")
-    pause(1, 1.5)
+    type_print("\n\n > Press enter to return to the Archive.")
+    input(" > ")
 
 def scp_open(scp_number, scp_lookup):
     row = scp_lookup.get(int(scp_number))
@@ -317,7 +341,7 @@ def scp_open(scp_number, scp_lookup):
         return
 
     else:
-        format_scp(row, scp_number)
+        output_scp(row, scp_number)
 
 def scp_files():
 
@@ -326,32 +350,37 @@ def scp_files():
     int(row["scp_id"]): row
     for _, row in scp_archives.iterrows()
 }
-
-    print_ascii_logo("fast")
-    type_print(" > 1) List")
-    pause(0.5, 1.0)
-    type_print(" > 2) Search")
-    pause(0.5, 1.0)
-    choice = int(input(" > "))
-
-    if choice == 1:
-        print(scp_archives.iloc[172])
-        print(scp_archives.iloc[172]["rating"])
-        print(scp_archives.iloc[172]["state"])
-        time.sleep(1)
+    while True:
+        print_ascii_logo("fast")
         
-        input(" > Press enter to continue")
-    
-    elif choice == 2:
-        scp_id = int(input(" > Enter SCP ID to search: "))
-        spinner(6, " > ACCESSING ARCHIVE")
-        scp_open(scp_id, scp_lookup)
-    else:
-        type_print(" > Invalid choice. Returning to main menu.")
+        archives_header = f"[ SCP ARCHIVE ACCESS - {len(scp_lookup)} FILES AVAILABLE ]"
+        type_print(f"{archives_header:^88}")
+        print("=" * 88)
+        pause(1, 1.5)
+        type_print(" > 1) List", delay=0.02)
         pause(0.5, 1.0)
-        return
+        type_print(" > 2) Search", delay=0.02)
+        pause(0.5, 1.0)
+        type_print(" > 3) Main Menu", delay=0.02)
+        pause(0.5, 1.0)
+
+        choice = int(input(" > "))
+    
+        if choice == 1:
+            
+            input(" > Press enter to continue")
+        
+        elif choice == 2:
+            scp_id = int(input(" > Enter SCP ID to search: "))
+            spinner(6, " > ACCESSING ARCHIVE")
+            scp_open(scp_id, scp_lookup)
+        else:
+            type_print(" > Returning to main menu.")
+            pause(0.5, 1.0)
+            break
 
 def mtf_teams():
+    print_ascii_logo("fast")
     print_ascii_logo("fast")
     type_print(" > 1) List")
     pause(0.5, 1.0)
@@ -365,6 +394,7 @@ def mtf_teams():
 
 def foundation_sites():
     print_ascii_logo("fast")
+    print_ascii_logo("fast")
     type_print(" > 1) List")
     pause(0.5, 1.0)
     type_print(" > 2) Search")
@@ -373,33 +403,20 @@ def foundation_sites():
 
 def departments():
     print_ascii_logo("fast")
+    print_ascii_logo("fast")
     type_print(" > 1) List")
     pause(0.5, 1.0)
     type_print(" > 2) Search")
     pause(0.5, 1.0)
     input("Press enter to continue")
 
-def main_menu_chooser(choice):
-    if choice == 1:
-      scp_files()
-    elif choice == 2:
-        mtf_teams()
-    elif choice == 3:
-        foundation_sites()
-    elif choice == 4:
-        departments()
-    else:
-        type_print(" > Shutting down O.R.A.C.L.E Terminal. Goodbye, O5-███")
-        pause(1, 1.5)
-
 def main():
-    
-    start_up()
-    login_screen()
-    remote_access_override()
-    main_menu()
-    user_choice = int(input(" > "))
-    main_menu_chooser(user_choice)
+  
+    #start_up()
+    #login_screen()
+    #remote_access_override()
+    main_loop()
+    #scp_files()
 
 if __name__ == "__main__":
     main()
