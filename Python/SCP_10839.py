@@ -1,9 +1,6 @@
 # SCP-10839 - "The Digital Oracle" is a terminal located in an impossible site that never existed. It holds knowledge on all current SCP's in existed
 import time, string, random, os, sys, textwrap, re
 import pandas as pd
-from email import header
-import time, string, random, os, sys, textwrap, re
-import pandas as pd
 
 # Helper Functions
 def type_print(text, delay=0.015):
